@@ -38,8 +38,18 @@ class RequestDTOResolver implements ValueResolverInterface
             return [];
         }
 
+        $dto = $this->deserializeRequestToDto($request, $type);
+
+        yield $dto;
+    }
+
+    /**
+     * @param class-string<RequestDTO> $type
+     * @throws RequestParsingError
+     */
+    private function deserializeRequestToDto(Request $request, string $type): RequestDTO
+    {
         try {
-            /** @var RequestDTO $dto */
             $dto = $this->serializer->deserialize($request->getContent(), $type, 'json');
         } catch (\Exception $e) {
             throw new RequestParsingError('Data deserialization error: '.$e->getMessage(), $e);
@@ -54,6 +64,6 @@ class RequestDTOResolver implements ValueResolverInterface
             throw new RequestParsingError('Request validation error: '.$errorMsg);
         }
 
-        yield $dto;
+        return $dto;
     }
 }

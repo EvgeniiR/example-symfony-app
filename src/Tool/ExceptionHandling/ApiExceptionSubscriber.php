@@ -24,7 +24,12 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
     {
         $exception = $event->getThrowable();
         if ($exception instanceof DomainException || $exception instanceof RequestParsingError) {
-            $event->setResponse(new JsonResponse($exception->getMessage(), 400));
+            $event->setResponse(
+                new JsonResponse([
+                    'status' => 'error',
+                    'message' => $exception->getMessage(),
+                ], 400)
+            );
         }
     }
 }

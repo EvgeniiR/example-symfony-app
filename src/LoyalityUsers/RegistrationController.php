@@ -27,7 +27,7 @@ class RegistrationController extends AbstractController
      * @throws \Exception
      */
     #[Route('/user/register', name: 'user_register', methods: ['POST'])]
-    public function index(
+    public function registerUser(
         RegisterUserRequest $request,
         RegisterUser $registerUser
     ): JsonResponse {
@@ -41,7 +41,8 @@ class RegistrationController extends AbstractController
         $this->doctrine->getManager()->flush();
 
         return new JsonResponse([
-            'message' => 'Success!',
+            'status' => 'success',
+            'message' => 'User registered',
         ]);
     }
 }

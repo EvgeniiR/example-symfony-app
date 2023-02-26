@@ -50,20 +50,19 @@ class DomainEventsDispatcher implements EventSubscriberInterface
         }
         $this->insidePostFlush = true;
 
-        $entitiesCount = 0;
+        $entitiesProcessed = 0;
         foreach ($args->getObjectManager()->getUnitOfWork()->getIdentityMap() as $identityMapEntry) {
-            $entitiesCount += $this->processIdentityMapEntry($identityMapEntry);
+            $entitiesProcessed += $this->processIdentityMapEntry($identityMapEntry);
         }
 
         $this->insidePostFlush = false;
-        if ($entitiesCount > 0) {
+        if ($entitiesProcessed > 0) {
             $this->doctrine->getManager()->flush();
         }
     }
 
     /**
      * @param array<string, object|null> $identityMapEntry
-     * @return int Processed events count
      */
     private function processIdentityMapEntry(array $identityMapEntry): int
     {
